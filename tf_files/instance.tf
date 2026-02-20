@@ -17,7 +17,7 @@ resource "aws_instance" "app_server" {
               sudo apt-get install -y python3-pip git
 
               # Clone your repository (Replace with your URL)
-              git clone https://github.com/techbleat/class25-26-project2 /home/ubuntu/app
+              git clone https://github.com/Mintorang/class25-26-project2 /home/ubuntu/app
               cd /home/ubuntu/app
 
               # Install dependencies
