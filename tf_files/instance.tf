@@ -2,31 +2,34 @@ resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.amiID.id
   instance_type          = "t3.micro"
   key_name               = "mo-key"
-  vpc_security_group_ids = [aws_security_group.test.id]
+  vpc_security_group_ids = [aws_security_group.app-sg.id]
   availability_zone      = "us-east-1a"
   subnet_id              = module.vpc.private_subnets[0]
 
 
+
+
+
   tags = {
-    Name = "test"
+    Name = "app_server"
   }
 
   user_data = <<-EOF
               #!/bin/bash
-              sudo apt-get update -y
-              sudo apt-get install -y python3-pip git
+              # 1. Install uv
+              curl -LsSf https://astral.sh/uv/install.sh | sh
+              
+              # 2. Setup App
+              cd /home/ubuntu
+              git clone https://github.com/techbleat/class25-26-project2.git
+              cd class25-26-project2
 
-              # Clone your repository (Replace with your URL)
-              git clone https://github.com/Mintorang/class25-26-project2 /home/ubuntu/app
-              cd /home/ubuntu/app
+              # 3. Create env and install using absolute path for uv
+              /root/.local/bin/uv venv 
+              source .venv/bin/activate
+              /root/.local/bin/uv pip install -r requirements.txt
 
-              # Install dependencies
-              pip3 install -r requirements.txt
-
-              # Run the app in the background
-              # Use 0.0.0.0 so it's accessible outside the instance
-              nohup uvicorn main:app --host 0.0.0.0 --port 8000 &
+              # 4. Start app in background and log output
+              nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > /home/ubuntu/app.log 2>&1 &
               EOF
-
-
 }
