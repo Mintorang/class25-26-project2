@@ -29,3 +29,18 @@
   ``
 
 # After this the env will ouput the url of the ec2 to view the app.
+
+
+## Bastion
+# To ssh into the bastion once the environmetn has full deployed
+# Paste this code into the terminal:
+``
+ssh -A ubuntu@*bastionip*
+``
+
+# Then to ssh into the app run this:
+``
+ssh ubuntu@*appip*
+``
+
+## All of the IPs will be outputed after you have deployed it.
